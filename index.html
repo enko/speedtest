@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>speedtest</title>
+    <link rel="stylesheet" type="text/css" href="bower_components/semantic-ui/dist/semantic.css"/>
+  </head>
+  <body>
+    <div class="ui basic segment">
+      <div class="ui segment">
+        <h1 class="ui dividing green header">Speedtest</h1>
+        <div id="start" class="ui large positive button">
+          Start
+        </div>
+        <div class="ui clearing hidden divider"></div>
+        <h2 class="ui top attached green header">Results</h2>
+        <div class="ui attached green segment">
+          <div class="ui progress" id="dl-progress">
+            <div class="bar">
+              <div class="progress"></div>
+            </div>
+            <div class="label">Testing speed</div>
+          </div>
+          <table class="ui definition table">
+            <colgroup>
+              <col width="10%">
+            </colgroup>
+            <tr>
+              <td>Downloaded</td>
+              <td id="downloaded"></td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td id="total"></td>
+            </tr>
+            <tr>
+              <td>Current speed</td>
+              <td id="speed"></td>
+            </tr>
+            <tr>
+              <td>Max speed</td>
+              <td id="maxspeed"></td>
+            </tr>
+          </table>
+        </div>    
+      </div>
+    </div>
+
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/semantic-ui/dist/semantic.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

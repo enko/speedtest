@@ -1,0 +1,24 @@
+{
+  "name": "speedtest",
+  "version": "1.0.0",
+  "authors": [
+    "Tim Schumacher <tim@datenknoten.me>"
+  ],
+  "description": "a speedtest script",
+  "main": "index.html",
+  "keywords": [
+    "speedtest",
+    "ajax"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "semantic-ui": "~1.12.1"
+  }
+}
