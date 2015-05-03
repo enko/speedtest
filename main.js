@@ -24,12 +24,12 @@ function handleProgressEvent(evt) {
     var bytes = evt.loaded - lastsample.bytes;
     var seconds = new Date().getTime() - lastsample.time;
     console.log([bytes,seconds/1000]);
-    var bytespersecond = (1 / (seconds/1000)) * bytes;
+    var bytespersecond = (bytes / (seconds/1000));
     if (bytespersecond > maxvalue) {
         maxvalue = bytespersecond;
-        $('#maxspeed').text(getReadableFileSizeString(maxvalue))
+        $('#maxspeed').text(getReadableFileSizeString(maxvalue) + '/s')
     }
-    $('#speed').text(getReadableFileSizeString(bytespersecond))
+    $('#speed').text(getReadableFileSizeString(bytespersecond) + '/s')
     lastsample = {
         bytes: evt.loaded,
         time: new Date().getTime()
@@ -42,6 +42,7 @@ $(document).ready(function(){
     });
 
     $('#start:not(.disabled)').click(function(){
+        var start = new Date().getTime();
         lastsample = {
             bytes: 0,
             time: new Date().getTime()
@@ -67,10 +68,13 @@ $(document).ready(function(){
 
                 return xhr;
             },
-            type: 'POST',
-            url: "speedbytes",
+            type: 'GET',
+            url: "speedbytes?_="+new Date().getTime(),
             data: {},
             complete: function(xhr,status) {
+                var end = new Date().getTime() - start;
+                var speed = getReadableFileSizeString(20000000 / (end / 1000)) + '/s';
+                $('calculatedspeed').text(speed);
                 $('#start').removeClass('disabled');
             }
         });
