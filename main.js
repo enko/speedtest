@@ -39,9 +39,18 @@ $(document).ready(function(){
     $('#dl-progress').progress({
         percent: 0
     });
+    $('#size')
+        .dropdown({
+            // you can use any ui transition
+            transition: 'drop'
+        })
+;
 
     $('#start:not(.disabled)').click(function(){
         var start = new Date().getTime();
+        var size = parseInt($('input[name=size]').val());
+        size = (isNaN(size) ? 20 : size);
+        console.log(size);
         lastsample = {
             bytes: 0,
             time: new Date().getTime()
@@ -68,11 +77,11 @@ $(document).ready(function(){
                 return xhr;
             },
             type: 'GET',
-            url: "speedbytes?_="+new Date().getTime(),
+            url: "speedbytes_"+size+"?_="+new Date().getTime(),
             data: {},
             complete: function(xhr,status) {
                 var end = new Date().getTime() - start;
-                var speed = getReadableFileSizeString(20000000 / (end / 1000)) + '/s';
+                var speed = getReadableFileSizeString((size * 1024 * 1024) / (end / 1000)) + '/s';
                 $('#calculatedspeed').text(speed);
                 $('#start').removeClass('disabled');
             }
