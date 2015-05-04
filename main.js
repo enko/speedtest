@@ -23,7 +23,6 @@ function handleProgressEvent(evt) {
     });
     var bytes = evt.loaded - lastsample.bytes;
     var seconds = new Date().getTime() - lastsample.time;
-    console.log([bytes,seconds/1000]);
     var bytespersecond = (bytes / (seconds/1000));
     if (bytespersecond > maxvalue) {
         maxvalue = bytespersecond;
@@ -74,7 +73,7 @@ $(document).ready(function(){
             complete: function(xhr,status) {
                 var end = new Date().getTime() - start;
                 var speed = getReadableFileSizeString(20000000 / (end / 1000)) + '/s';
-                $('calculatedspeed').text(speed);
+                $('#calculatedspeed').text(speed);
                 $('#start').removeClass('disabled');
             }
         });
