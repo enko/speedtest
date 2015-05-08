@@ -34,7 +34,7 @@ function sendData(direction,size,post_data) {
             return xhr;
         },
         type: (direction == 'download' ? 'GET' : 'POST'),
-        url: (direction == 'download' ? "speedbytes_"+size+"?_="+new Date().getTime() : "empty"),
+        url: (direction == 'download' ? "speedbytes_"+size+"?_="+new Date().getTime() : "empty?_="+new Date().getTime()),
         data: post_data,
         complete: function(xhr,status) {
             var end = new Date().getTime() - start;
