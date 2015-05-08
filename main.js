@@ -14,6 +14,37 @@ function getReadableFileSizeString(fileSizeInBytes) {
 var lastsample = {};
 var maxvalue = 0;
 
+function sendData(start,direction,size,post_data) {
+    console.log([start,direction,size,post_data]);
+    $.ajax({
+        xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(evt) {
+                if (evt.lengthComputable) {
+                    handleProgressEvent(evt);
+                }
+            }, false);
+
+            xhr.addEventListener("progress", function(evt) {
+                if (evt.lengthComputable) {
+                    handleProgressEvent(evt);
+                }
+            }, false);
+
+            return xhr;
+        },
+        type: (direction == 'download' ? 'GET' : 'POST'),
+        url: (direction == 'download' ? "speedbytes_"+size+"?_="+new Date().getTime() : "empty"),
+        data: post_data,
+        complete: function(xhr,status) {
+            var end = new Date().getTime() - start;
+            var speed = getReadableFileSizeString((size * 1024 * 1024) / (end / 1000)) + '/s';
+            $('#calculatedspeed').text(speed);
+            $('#start').removeClass('disabled');
+        }
+    });
+}
+
 function handleProgressEvent(evt) {
     $('#downloaded').text(getReadableFileSizeString(evt.loaded));
     $('#total').text(getReadableFileSizeString(evt.total));
@@ -39,7 +70,8 @@ $(document).ready(function(){
     $('#dl-progress').progress({
         percent: 0
     });
-    $('#size')
+
+    $('#size,#direction')
         .dropdown({
             // you can use any ui transition
             transition: 'drop'
@@ -57,8 +89,9 @@ $(document).ready(function(){
     $('#start:not(.disabled)').click(function(){
         var start = new Date().getTime();
         var size = parseInt($('input[name=size]').val());
+        var direction = $('input[name=direction]').val();        
         size = (isNaN(size) ? 20 : size);
-        console.log(size);
+        direction = (direction == '' ? 'download' : direction);
         lastsample = {
             bytes: 0,
             time: new Date().getTime()
@@ -67,33 +100,35 @@ $(document).ready(function(){
         $('#dl-progress').progress({
             percent: 0
         });
-        $.ajax({
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        handleProgressEvent(evt);
-                    }
-                }, false);
+        var post_data = {};
+        if (direction == 'upload') {
+            $('#dl-progress .label').text('Generating random data');
+            var worker = new Worker("random_data.js");
+            worker.addEventListener('message', function(e) {
+                var results = e.data;
+                if (results.type == 'progress') {
+                    $('#dl-progress').progress({
+                        percent: results.progress
+                    });
+                } else if (results.type == 'result') {
+                    post_data = {
+                        data: results.data
+                    };
+                    $('#dl-progress .label').text('Testing speed');
+                    $('#dl-progress').progress({
+                        percent: 0
+                    });             
+                    sendData(start,direction,size,post_data);
+                }
+            }, false);
+            worker.postMessage({'cmd': 'start', 'size': size});
+        } else {
+            $('#dl-progress').progress({
+                percent: 0
+            });
+            sendData(start,direction,size,post_data);
+        }
 
-                xhr.addEventListener("progress", function(evt) {
-                    if (evt.lengthComputable) {
-                        handleProgressEvent(evt);
-                    }
-                }, false);
-
-                return xhr;
-            },
-            type: 'GET',
-            url: "speedbytes_"+size+"?_="+new Date().getTime(),
-            data: {},
-            complete: function(xhr,status) {
-                var end = new Date().getTime() - start;
-                var speed = getReadableFileSizeString((size * 1024 * 1024) / (end / 1000)) + '/s';
-                $('#calculatedspeed').text(speed);
-                $('#start').removeClass('disabled');
-            }
-        });
     });
     
 });
