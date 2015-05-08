@@ -14,8 +14,8 @@ function getReadableFileSizeString(fileSizeInBytes) {
 var lastsample = {};
 var maxvalue = 0;
 
-function sendData(start,direction,size,post_data) {
-    console.log([start,direction,size,post_data]);
+function sendData(direction,size,post_data) {
+    var start = new Date().getTime();
     $.ajax({
         xhr: function() {
             var xhr = new window.XMLHttpRequest();
@@ -87,7 +87,6 @@ $(document).ready(function(){
     });
 
     $('#start:not(.disabled)').click(function(){
-        var start = new Date().getTime();
         var size = parseInt($('input[name=size]').val());
         var direction = $('input[name=direction]').val();        
         size = (isNaN(size) ? 20 : size);
@@ -118,7 +117,7 @@ $(document).ready(function(){
                     $('#dl-progress').progress({
                         percent: 0
                     });             
-                    sendData(start,direction,size,post_data);
+                    sendData(direction,size,post_data);
                 }
             }, false);
             worker.postMessage({'cmd': 'start', 'size': size});
@@ -126,7 +125,7 @@ $(document).ready(function(){
             $('#dl-progress').progress({
                 percent: 0
             });
-            sendData(start,direction,size,post_data);
+            sendData(direction,size,post_data);
         }
 
     });
