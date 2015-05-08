@@ -44,7 +44,15 @@ $(document).ready(function(){
             // you can use any ui transition
             transition: 'drop'
         })
-;
+    ;
+
+    $.ajax({
+        method: 'GET',
+        url: "https://r.datenknoten.me/",
+        success: function(data) {
+            $('#ip').text(data);
+        }
+    });
 
     $('#start:not(.disabled)').click(function(){
         var start = new Date().getTime();
